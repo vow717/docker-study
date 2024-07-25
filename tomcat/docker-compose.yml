@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  appdb:
+    image: mysql:8.0.27
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/my.cnf
+      - ./db/mysql-files:/var/lib/mysql-files
+
+    networks:
+      - net1
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: Wkfroot
+      MYSQL_DATABSE: my_database
+
+  tomcat:
+    image: tomcat:9.0.73-jdk17-temurin
+    ports:
+      - "8082:8080"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_HOST: appdb
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Wkfroot
+    volumes:
+      - ./webapps:/usr/local/tomcat/webapps
+      - ./tomcat/conf:/usr/local/tomcat/conf
+      - ./tomcat/lib:/usr/local/tomcat/lib  # 挂载目录以包含 MySQL JDBC 驱动
+    depends_on:
+      - appdb  # 依赖数据库appdb先启动
+    networks:
+      - net1
+
+
+networks:
+  net1:
+    driver: bridge

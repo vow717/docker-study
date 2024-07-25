@@ -15,3 +15,17 @@ mkdir -p app/db
 cd app
 准备写docker-compose.yml
 
+## 容器启动，删除
+docker-compose up -d <br>
+后台模式创建并运行
+
+docker-compose stop <br>
+停止容器
+
+docker-compose down <br>
+关闭并删除容器（保留卷和网络）
+
+docker-compose down -v <br>
+删除容器的同时删除关联的卷
+docker-compose down --remove-orphans <br>
+删除为服务创建的网络
