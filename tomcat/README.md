@@ -23,7 +23,7 @@ tomcat:
       - net1
 ```
 esc  :wq退出后
-在/app/tomcat/context.xml内写上:
+在/app/tomcat/conf/context.xml内写上:
 ```
 <Context>
   <Resource name="jdbc/MyDB"
