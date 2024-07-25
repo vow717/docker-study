@@ -39,7 +39,7 @@ esc  :wq退出后
 </Context>
 ```
 退出，完成。
-docker-compose up -d启动。
+docker compose up -d启动。
 新拉取的tomcat可能下载要花些时间。
 
 ### 在tomcat/lib里

@@ -60,7 +60,7 @@ networks:
 ```
 
 然后esc :wq保存退出， <br>
-docker-compose up -d启动容器
+docker compose up -d启动容器
 
 ### 连接
 用navicat 新建连接，ip地址写192.168.0.104(我虚拟机的ip) <br>
