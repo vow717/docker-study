@@ -41,3 +41,17 @@ esc  :wq退出后
 退出，完成。
 docker-compose up -d启动。
 新拉取的tomcat可能下载要花些时间。
+
+### 在tomcat/lib里
+安装JDBC驱动程序，使得java应用程序能连接和操作mysql数据库
+```
+在虚拟机上使用 wget 下载 JAR 文件：
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.27.tar.gz
+使用 tar 命令解压缩下载的 TAR 文件以获取 JAR 文件：
+tar -xzf mysql-connector-java-8.0.27.tar.gz
+移动
+mv mysql-connector-java-8.0.27/mysql-connector-java-8.0.27.jar lib/
+删除多余文件
+rm -rf mysql-connector-java-8.0.27 mysql-connector-java-8.0.27.tar.gz
+
+再次docker-compose up -d 启动
