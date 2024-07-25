@@ -23,6 +23,7 @@ services:
     ports:
       - "8082:8080"
     environment:
+      TZ: Asia/Shanghai
       MYSQL_HOST: appdb
       MYSQL_PORT: 3306
       MYSQL_DATABASE: my_database
