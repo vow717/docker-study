@@ -19,15 +19,30 @@ tomcat:
       - ./tomcat/lib:/usr/local/tomcat/lib  # 挂载目录以包含 MySQL JDBC 驱动
     depends_on:
       - appdb
-    networks:
-      - net1
 ```
+考虑到Tomcat不直接配置数据库连接，数据库连接由Web应用自身配置（例如在context.xml或其他配置文件中）。
+（暂时不知道怎么弄）
+```
+
+  tomcat:
+    image: tomcat:10.1.6-jdk17-temurin
+    ports:
+      - "8082:8080" 
+    volumes:
+      - /app/tomcat/webapps:/usr/local/tomcat/webapps
+    environment:
+      TZ: Asia/Shanghai
+    depends_on:
+      appdb:
+        condition: service_healthy
+
+```
+
 esc  :wq退出后
 在/app/tomcat/conf/context.xml内写上:
 ```
 <Context>
   <Resource name="jdbc/MyDB"
-            auth="Container"
             type="javax.sql.DataSource"
             maxTotal="100"
             maxIdle="30"
@@ -35,23 +50,14 @@ esc  :wq退出后
             username="root"
             password="Wkfroot"
             driverClassName="com.mysql.cj.jdbc.Driver"
-            url="jdbc:mysql://appdb:3306/my_database?useSSL=false&amp;serverTimezone=UTC"/>
+            url="jdbc:mysql://appdb:3306/my_database" />
 </Context>
 ```
 退出，完成。
 docker compose up -d启动。
 新拉取的tomcat可能下载要花些时间。
 
-### 在tomcat/lib里
-安装JDBC驱动程序，使得java应用程序能连接和操作mysql数据库
-```
-在虚拟机上使用 wget 下载 JAR 文件：
-wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.27.tar.gz
-使用 tar 命令解压缩下载的 TAR 文件以获取 JAR 文件：
-tar -xzf mysql-connector-java-8.0.27.tar.gz
-移动
-mv mysql-connector-java-8.0.27/mysql-connector-java-8.0.27.jar lib/
-删除多余文件
-rm -rf mysql-connector-java-8.0.27 mysql-connector-java-8.0.27.tar.gz
+### 注意
+为了让war包包括你需要的全部依赖项，把应用程序pom.xml下的依赖项的<scope>全删了，变成默认。
 
 再次docker-compose up -d 启动

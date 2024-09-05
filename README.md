@@ -29,3 +29,9 @@ docker compose down -v <br>
 删除容器的同时删除关联的卷
 docker compose down --remove-orphans <br>
 删除为服务创建的网络
+
+## 注意
+（我这开放8082端口出去）
+防火墙设置允许外部设备访问8082端口。
+sudo firewall-cmd --zone=public --add-port=8082/tcp --permanent
+sudo firewall-cmd --reload

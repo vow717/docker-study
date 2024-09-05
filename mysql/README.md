@@ -8,7 +8,7 @@ docker cp temp:/etc/mysql/my.cnf .
 docker cp temp:/etc/mysql/conf.d .
 ### 删除这个容器
 docker rm -f temp
-### 修改my.cnf主配置文件字符集
+### 修改my.cnf主配置文件字符集(mysql8以后就不需要了)
 vim my.cnf <br>
 ```
 [mysql] 
@@ -35,28 +35,22 @@ docker run --name appDB -itd \
 --network appnet \  #加入到自定义网络中去\
 myappdb
 
-### 不管自定义镜像的话，在app目录下vim docker-compose.yml
+## 不管自定义镜像的话,上面的全都不用，直接在app目录下vim docker-compose.yml
 ```
 version: "3.8"
+
 services:
-  appdb:  
-    image: mysql:8.0.27       
-    ports:              
-      - "3308:3306"            
-    volumes:            
-      - ./db/conf.d:/etc/mysql/conf.d      
-      - ./db/data:/var/lib/mysql        
-      - ./db/my.cnf:/etc/mysql/my.cnf        
-      - ./db/mysql-files:/var/lib/mysql-files     
-
-    networks:       
-      - net1  
-    environment:  
-      MYSQL_ROOT_PASSWORD: Wkfroot   
-
-networks: 
-  net1:  
-    driver: bridge   
+  appdb:
+    image: mysql:8.0.27
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./db/data:/var/lib/mysql
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: Wkfroot
+      MYSQL_DATABASE: my_database
+   
 ```
 
 然后esc :wq保存退出， <br>

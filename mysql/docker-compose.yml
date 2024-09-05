@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
   appdb:
@@ -6,39 +6,42 @@ services:
     ports:
       - "3308:3306"
     volumes:
-      - ./db/conf.d:/etc/mysql/conf.d
       - ./db/data:/var/lib/mysql
-      - ./db/my.cnf:/etc/mysql/my.cnf
-      - ./db/mysql-files:/var/lib/mysql-files
-
-    networks:
-      - net1
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: Wkfroot
-      MYSQL_DATABSE: my_database
+      MYSQL_DATABASE: my_database
+    '''
+在 Docker Compose 中，可以使用 healthcheck 选项来定义容器的健康检查。
+这允许 Docker 了解容器的健康状态，并在服务不可用时采取相应的措施。
+可以确保 Tomcat 在 MySQL 完全启动并准备就绪之后再启动，以避免由于数据库未准备好而导致的数据访问问题。
+
+test:
+["CMD", "mysqladmin", "ping", "-h", "localhost"]：
+这里使用 CMD 来运行命令。
+mysqladmin 是一个 MySQL 管理工具，用于执行管理操作。
+ping 是 mysqladmin 的一个子命令，用于检查 MySQL 服务是否正在运行。
+-h 参数指定要 ping 的主机，这里是 localhost，表示容器内部的 MySQL 服务。
+interval：两次健康检查之间的时间间隔。这里设置为 30 秒。
+timeout：每次健康检查的超时时间。这里设置为 10 秒。
+retries：在判定容器不健康之前的重试次数。这里设置为 3 次。
+start_period：容器启动后在开始健康检查之前的等待时间。这里设置为 30 秒。
+    '''
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   tomcat:
-    image: tomcat:9.0.73-jdk17-temurin
+    image: tomcat:10.1.6-jdk17-temurin
     ports:
       - "8082:8080"
+    volumes:
+      - /app/tomcat/webapps:/usr/local/tomcat/webapps
     environment:
       TZ: Asia/Shanghai
-      MYSQL_HOST: appdb
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: my_database
-      MYSQL_USER: root
-      MYSQL_PASSWORD: Wkfroot
-    volumes:
-      - ./webapps:/usr/local/tomcat/webapps
-      - ./tomcat/conf:/usr/local/tomcat/conf
-      - ./tomcat/lib:/usr/local/tomcat/lib  # 挂载目录以包含 MySQL JDBC 驱动
     depends_on:
-      - appdb
-    networks:
-      - net1
-
-
-networks:
-  net1:
-    driver: bridge
+      appdb:
+        condition: service_healthy //依赖mysql先启动
