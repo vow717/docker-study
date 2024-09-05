@@ -35,3 +35,12 @@ docker compose down --remove-orphans <br>
 防火墙设置允许外部设备访问8082端口。
 sudo firewall-cmd --zone=public --add-port=8082/tcp --permanent
 sudo firewall-cmd --reload
+
+## 打包前端作业到虚拟机
+在idea下压缩成的war包。
+Windows 10以上自带SSH，直接用SSH命令。
+win+r打开主机终端
+scp 主机需要传输的文件绝对地址 虚拟机用户名@虚拟机地址:需要传输到虚拟机的目录
+然后可能需要输入密码。
+需要传输到tomcat下的webapps里，再运行容器。
+这样在你主机的电脑上浏览器打开虚拟机ip＋对应端口就可以打开你的前端作业了。
