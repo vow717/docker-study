@@ -44,3 +44,12 @@ scp 主机需要传输的文件绝对地址 虚拟机用户名@虚拟机地址:�
 然后可能需要输入密码。
 需要传输到tomcat下的webapps里，再运行容器。
 这样在你主机的电脑上浏览器打开虚拟机ip＋对应端口就可以打开你的前端作业了。
+
+## 容器管理命令
+启动容器：docker-compose up -d
+停止容器：docker-compose stop
+删除容器：docker-compose down
+查看运行中的容器：docker ps
+查看所有容器：docker ps -a
+查看镜像：docker images
+进入容器：docker exec -it my_mysql_container bash
