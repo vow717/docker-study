@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  appdb:
+  mysql:
     image: mysql:8.0.27
     ports:
       - "3308:3306"
@@ -21,5 +21,5 @@ services:
     environment:
       TZ: Asia/Shanghai
     depends_on:
-      appdb:
+      mysql:
         condition: service_healthy  //依赖mysql先启动

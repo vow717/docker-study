@@ -18,7 +18,7 @@ tomcat:
       - ./tomcat/conf:/usr/local/tomcat/conf
       - ./tomcat/lib:/usr/local/tomcat/lib  # 挂载目录以包含 MySQL JDBC 驱动
     depends_on:
-      - appdb
+      - mysql
 ```
 考虑到Tomcat不直接配置数据库连接，数据库连接由Web应用自身配置（例如在context.xml或其他配置文件中）。
 （暂时不知道怎么弄）
@@ -33,7 +33,7 @@ tomcat:
     environment:
       TZ: Asia/Shanghai
     depends_on:
-      appdb:
+      mysql:
         condition: service_healthy
 
 ```
@@ -50,7 +50,7 @@ esc  :wq退出后
             username="root"
             password="Wkfroot"
             driverClassName="com.mysql.cj.jdbc.Driver"
-            url="jdbc:mysql://appdb:3306/my_database" />
+            url="jdbc:mysql://mysql:3306/my_database" />
 </Context>
 ```
 退出，完成。

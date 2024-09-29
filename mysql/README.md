@@ -40,7 +40,7 @@ myappdb
 version: "3.8"
 
 services:
-  appdb:
+  mysql:
     image: mysql:8.0.27
     ports:
       - "3308:3306"
