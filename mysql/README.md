@@ -67,12 +67,13 @@ docker compose up -d启动容器
 1.容器启动后自动关闭 <br>
 可能是端口被占用，关闭其他冲突的容器 <br>
 2.权限问题 <br>
-docker exec -it app-appdb-1(docker ps看看这个名字是什么) /bin/bash <br>
+docker exec -it app-appdb-1(docker ps看看这个名字是什么) /bin/bash (或者直接bash)<br>
+然后可以mysql -u root -p登入进去<br>
 允许任何主机的连接 <br>
 CREATE USER 'root'@'%' IDENTIFIED BY 'Wkfroot'; <br>
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION; <br>
-FLUSH PRIVILEGES; 
-
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'具体地址' IDENTIFIED BY '实际密码' WITH GRANT OPTION; <br>
+FLUSH PRIVILEGES; <br>
+然后quit,exit退出
 
 
 
