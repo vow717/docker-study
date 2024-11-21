@@ -53,3 +53,10 @@ scp 主机需要传输的文件绝对地址 虚拟机用户名@虚拟机地址:�
 查看所有容器：docker ps -a
 查看镜像：docker images
 进入容器：docker exec -it my_mysql_container bash
+
+
+## 注意
+如果遇到异常退出的情况
+可以考虑先任务管理器给后台，注意是后台的virtual给删了
+然后再管理员身份启动
+就差不多能好了
