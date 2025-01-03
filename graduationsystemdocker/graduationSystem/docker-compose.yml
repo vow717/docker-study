@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0.33
+    ports:
+      - "3310:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: ${mysql_password}
+      MYSQL_DATABASE: my_database
+    command:
+      --max_connections=2500
+    healthcheck:
+      # test: mysql --user=root --password=1157 -e "select 1;"
+      test: mysql -uroot -p$$MYSQL_ROOT_PASSWORD -e "select 1;"
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/html/dist:/usr/share/nginx/html # 将前端构建产物挂载到Nginx容器中
+    ports:
+      - "81:80"
+    depends_on:
+      - openjdk
+    environment:
+      - bhost=openjdk:8080
+
+  openjdk:
+    image: openjdk:21
+    command: ["java", "-jar", "/app/graduation-project-process-management-wkf-0.0.1-SNAPSHOT.jar"]
+    volumes:
+      - ./openjdk/upload:/graduationsystem/upload
+      - ./openjdk/graduation-project-process-management-wkf-0.0.1-SNAPSHOT.jar:/app/graduation-project-process-management-wkf-0.0.1-SNAPSHOT.jar
+    ports:
+      - '8080'
+    depends_on:
+      - mysql
