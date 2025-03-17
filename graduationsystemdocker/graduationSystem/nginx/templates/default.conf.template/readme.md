@@ -20,6 +20,19 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
+
+    location ~ \.(png|jpg|jpeg|gif)$ {
+        add_header Cache-Control "max-age=2592000, public";
+        etag on;
+        expires 30d;
+    }
+
+    location ~ \.(css|js)$ {
+        add_header Cache-Control "max-age=31536000, public";
+        # 可以添加 ETag 和 Last-Modified 相关的配置
+        etag on;
+        expires 1y;
+    }
 }
 
 ### nginx里面： 
@@ -36,3 +49,10 @@ server {
 ### add_header Cache-Control "no-cache";
 当服务器发送响应时，添加这个头信息告诉浏览器和中间缓存服务器（如代理服务器），在使用缓存的内容之前，必须先与服务器进行验证。这并不意味着禁止缓存，而是要求每次使用缓存之前都要进行一个称为 “再验证（revalidation）” 的过程。  
 具体来说，当浏览器想要使用一个被标记为no - cache的缓存文件时，它会向服务器发送一个带有条件请求头（如If - Modified - Since或If - None - Match）的请求。服务器会根据这些条件来判断缓存的文件是否仍然有效。如果有效，服务器会返回一个304 Not Modified的响应，告诉浏览器可以继续使用缓存中的文件；如果文件已经被修改，服务器会返回新的文件内容。  
+如果不设置其他的默认用If-Modified-Since,如果 etag on;那就用etag。
+
+### css和js文件
+这些文件通常更新频率相对较低，可以设置较长的缓存时间，同时采用版本化的文件名。例如，在打包时给文件名添加版本号或哈希值，这样在文件内容更新时，文件名会改变，客户端会请求新的文件，而旧文件可以继续被缓存。在 Nginx 配置中，可以为这些文件单独设置 Cache-Control 头  
+
+### 图片文件
+图片文件的更新频率也相对较低，同样可以设置较长的缓存时间。可以根据图片的类型和用途进行更细致的区分，例如，对于用户头像这类可能会更新的图片，可以设置较短的缓存时间；对于一些静态的图标等，可以设置较长的缓存时间。  
